@@ -123,6 +123,12 @@ print(result["score"], result["band"], result["advice"])
 uv run --with pytest pytest tests/ -v
 ```
 
+## Acknowledgments
+
+The core analysis engine in this plugin is extracted from [**slop-guard**](https://github.com/eric-tramel/slop-guard) by [Eric Tramel](https://github.com/eric-tramel). Eric built the original ~80-rule regex linter and the scoring model (exponential decay with concentration multipliers for Claude-specific patterns). His [blog post](https://eric-tramel.github.io/blog/2026-02-18-slop-guard/) covers the design rationale. The original code is released under the MIT license.
+
+This plugin wraps that engine as a Data Designer column generator plugin so it can be used to score and improve synthetic datasets at scale.
+
 ## License
 
-Apache-2.0. Core analysis engine from [slop-guard](https://github.com/eric-tramel/slop-guard) under MIT license.
+Apache-2.0. Core analysis engine from [eric-tramel/slop-guard](https://github.com/eric-tramel/slop-guard) under MIT license.
