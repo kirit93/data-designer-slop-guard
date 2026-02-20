@@ -6,13 +6,21 @@ Runs ~80 compiled patterns against text and returns a numeric score (0–100), a
 
 ## Install
 
-From the Data Designer project root:
+Requires `data-designer` to be installed in your environment.
 
 ```bash
-uv pip install -e /path/to/data-designer-slop-guard
+# From a project that already has data-designer installed
+pip install data-designer-slop-guard
+
+# Or with uv
+uv pip install data-designer-slop-guard
+
+# From source (for development)
+git clone https://github.com/kirit93/data-designer-slop-guard.git
+pip install -e data-designer-slop-guard
 ```
 
-The plugin registers itself via Python entry points. Data Designer's `PluginRegistry` auto-discovers it on next import — no core code changes needed.
+The plugin registers itself via Python entry points. Data Designer's `PluginRegistry` auto-discovers it on next import — no core code changes needed. Just install and use.
 
 ## Usage
 
