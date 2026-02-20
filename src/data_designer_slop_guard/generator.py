@@ -4,7 +4,9 @@ import logging
 from typing import TYPE_CHECKING
 
 import data_designer.lazy_heavy_imports as lazy
+from data_designer.config.errors import InvalidConfigError
 from data_designer.engine.column_generators.generators.base import ColumnGeneratorFullColumn
+from data_designer.logging import LOG_INDENT
 
 from data_designer_slop_guard.config import SlopGuardColumnConfig
 from data_designer_slop_guard.core import analyze_text
@@ -20,8 +22,15 @@ class SlopGuardColumnGenerator(ColumnGeneratorFullColumn[SlopGuardColumnConfig])
 
     def generate(self, data: pd.DataFrame) -> pd.DataFrame:
         logger.info(f"\U0001f9f9 Scoring column {self.config.name!r} for AI slop patterns")
-        logger.info(f"   target columns: {self.config.target_columns}")
-        logger.info(f"   min_score: {self.config.min_score}")
+        logger.info(f"{LOG_INDENT}target columns: {self.config.target_columns}")
+        logger.info(f"{LOG_INDENT}min_score: {self.config.min_score}")
+
+        missing_columns = set(self.config.target_columns) - set(data.columns)
+        if missing_columns:
+            raise InvalidConfigError(
+                f"Target columns {missing_columns} defined in slop-guard column "
+                f"{self.config.name!r} are missing in dataset"
+            )
 
         results = []
         for _, row in data[self.config.target_columns].iterrows():
@@ -40,6 +49,5 @@ class SlopGuardColumnGenerator(ColumnGeneratorFullColumn[SlopGuardColumnConfig])
                 output["slop_counts"] = analysis["counts"]
             results.append(output)
 
-        data = data.copy()
-        data[self.config.name] = results
-        return data
+        slop_results = lazy.pd.DataFrame({self.config.name: results})
+        return lazy.pd.concat([data, slop_results], axis=1)
